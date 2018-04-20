@@ -1,1 +1,3 @@
 # Game---grass-jumping-in-javascript
+Add the path of images and sound to play this game.
+Thanks...
