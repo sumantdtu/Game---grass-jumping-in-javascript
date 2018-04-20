@@ -1,0 +1,150 @@
+<html>
+<head><title>bgmove</title>
+<body>
+<canvas id="canvas" ></canvas>
+<audio id="audio" src="D:\sumant\js\5.mp3"></audio>
+<img src="D:\sumant\js\mn.png" id='man' style='position:absolute; top:333; left:40; z-index:3'>
+<img src="D:sumant\js\ckt.png" id='ckt' style='position:absolute; top:348; left:470; z-index:2'>
+<img src="D:\sumant\js\ckt.png" id='ckt1' style='position:absolute; top:240; left:650; z-index:2'>
+<img src="D:\sumant\js\ckt.png" id='ckt2' style='position:absolute; top:348; left:850; z-index:2'>
+<audio id="cry" src="D:\sumant\js\6.mp3"></audio>
+<div id="result"  style ="height:70px; width:900px; margin-left:0px; background-color:lightgreen; font-size:50px; color:red"></div>
+<!--#canvas {
+    border:1px solid #dfdfdf;
+    position:absolute;
+}
+-->
+<script>
+
+var man = document.getElementById('man').style;
+var ckt = document.getElementById('ckt').style;
+var ckt1 = document.getElementById('ckt1').style;
+var ckt2 = document.getElementById('ckt2').style;
+var xman=40;
+var yman=333;
+var xckt=470;
+var yckt=348;;
+var xckt1=650;
+var yckt1=240;
+var xckt2=850;
+var yckt2=348;
+var xspeed= 10;
+var yspeed= 10;
+var score =0;
+
+var timer;
+moveTimer();
+
+document.onkeydown = KeyDownMoveIt;
+function KeyDownMoveIt(e){
+
+if(e.keyCode==38){
+yman = yman - 65;
+play();
+}
+if(e.keyCode==40)
+yman = yman + 65;
+
+if(yman<258 || yman>333)
+yman = 333;
+man.top = yman;
+}
+function play(){
+var audio = document.getElementById("audio");
+if(audio.paused){
+audio.play();
+}
+else {
+audio.currentTime = 0;
+}
+}
+function cry(){
+var ad = document.getElementById("cry");
+ad.play();
+}
+
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+canvas.width = 900;
+canvas.height = 475;
+//draw Image
+var velocity=100;
+var bgImage = new Image();
+bgImage.addEventListener('load',drawImage,false);
+bgImage.src =   "D:/sumant/js/bkd.png";         //"http://www.uiupdates.com/wp-content/uploads/2015/03/game-background.jpg";
+function drawImage(time){          
+        var framegap=time-lastRepaintTime;
+		lastRepaintTime=time;
+		var translateX=velocity*(framegap/800);
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+	 	var pattern=ctx.createPattern(bgImage,"repeat-x");
+		ctx.fillStyle=pattern;
+		ctx.rect(translateX,0,bgImage.width,bgImage.height);
+	   ctx.fill();
+        ctx.translate(-translateX,0);	
+	requestAnimationFrame(drawImage);
+}
+
+
+
+///
+function moveTimer(){
+//speed
+if(score<50)
+xspeed= -5*Math.random()-5;
+if(score>=50 && score<100)
+xspeed= -8*Math.random()-8;
+if(score>100 && score<150)
+xspeed= -12*Math.random()-12;
+if(score>=150)
+xspeed= -15*Math.random()-15;
+
+//ckt
+xckt=xckt+xspeed;
+ckt.left=xckt;
+
+if(xckt+xspeed<5)
+xckt=850;
+//ckt1
+
+xckt1=xckt1+xspeed;
+ckt1.left=xckt1;
+
+if(xckt1+xspeed<5)
+xckt1=850;
+
+//ckt2
+
+xckt2=xckt2+xspeed;
+ckt2.left=xckt2;
+
+if(xckt2+xspeed<5)
+xckt2=850;
+score += Math.abs(xspeed)/50;
+//if(score<50)
+timer = setTimeout('moveTimer()',20);
+
+var result = document.getElementById("result") 
+result.innerHTML="SCORE:"+parseInt(score);
+//document.write("<text-align='right'>score = </text>"+score);
+if((xman<xckt+50 && xman+50>xckt && yman<yckt+60 && yman+75>yckt) ||(xman<xckt1+50 && xman+50>xckt1 && yman<yckt1+60 && yman+75>yckt1) || (xman<xckt2+50 && xman+50>xckt2 && yman<yckt2+60 && yman+75>yckt2) ){
+cry();
+wait(700);
+clearTimeout(timer);
+document.write("<h1><b><font color='red'>Game Over</font></b></h1>");
+document.write("<h1>score = "+parseInt(score));
+}
+}
+function wait(ms){
+var start = new Date().getTime();
+var end = start;
+while(end<start+ms){
+end = new Date().getTime();
+}
+}
+var lastRepaintTime=window.performance.now();
+</script>
+</body>
+</html>
+
